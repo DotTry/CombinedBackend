@@ -44,7 +44,7 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 	public Long createComment(Comment comment, Group group, int ds) throws AppException {
 		long commentId = commentDao.createComment(comment, ds);
 		comment.setId(commentId);
-		aclController.createACL(comment);
+		aclController.createACL(comment, ds);
 		aclController.createAce(comment, CustomPermission.READ);
 		aclController.createAce(comment, CustomPermission.WRITE);
 		aclController.createAce(comment, CustomPermission.DELETE);

@@ -59,7 +59,7 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 		validateInputForCreation(clas);
 		long classId = classDao.createClass(clas, ds);
 		clas.setId(classId);
-		aclController.createACL(clas);
+		aclController.createACL(clas, ds);
 		aclController.createAce(clas, CustomPermission.MANAGER);
 		return classId;
 	}

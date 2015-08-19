@@ -46,7 +46,7 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 		long postId = postDao.createPost(post, ds);
 		post.setId(postId);
-		aclController.createACL(post);
+		aclController.createACL(post, ds);
 		aclController.createAce(post, CustomPermission.READ);
 		aclController.createAce(post, CustomPermission.WRITE);
 		aclController.createAce(post, CustomPermission.DELETE);

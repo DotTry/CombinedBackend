@@ -62,7 +62,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 
 		long groupId = groupDao.createGroup(group, ds);
 		group.setId(groupId);
-		aclController.createACL(group);
+		aclController.createACL(group, ds);
 		aclController.createAce(group, CustomPermission.MANAGER);
 		return groupId;
 	}

@@ -34,12 +34,11 @@ public class ResponseCorsFilter implements Filter {
 			HttpServletRequest origRequest = (HttpServletRequest) servletRequest;
 			
 			//try to match origin with list
-			String matchedOrigin = matchOrigin(origRequest.getHeader("origin"));
-			if (matchedOrigin != null) {
-				//matched origin will be attached to response header
+			try{
+				String matchedOrigin = matchOrigin(origRequest.getHeader("origin"));
 				addHeadersFor200Response(alteredResponse, matchedOrigin);
-			} else {
-				//fall back to "*"
+			}
+			catch(NullPointerException e){
 				addHeadersFor200Response(alteredResponse, "*");
 			}
 		}

@@ -34,6 +34,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import dash.errorhandling.AppException;
 import dash.filters.AppConstants;
 import dash.service.UserService;
+import dash.tran.TaskSwitch;
+import dash.tran.UserSwitch;
 
 /**
  *
@@ -54,7 +56,9 @@ public class UsersResource {
 
 	@Autowired
 	private UserService userService;
-
+	
+	@Autowired
+	private UserSwitch userTran;
 	/*
 	 * *********************************** CREATE
 	 * ***********************************
@@ -72,7 +76,7 @@ public class UsersResource {
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
 	public Response createUser(User user, @QueryParam(value = "ds") int ds) throws AppException {
-		Long createUserId = userService.createUser(user, ds);
+		Long createUserId = userTran.createUser(user, ds);
 		return Response
 				.status(Response.Status.CREATED)
 				// 201
@@ -137,7 +141,7 @@ public class UsersResource {
 	@Path("list")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	public Response createUsers(List<User> users, @QueryParam(value = "ds") int ds) throws AppException {
-		userService.createUsers(users, ds);
+		userTran.createUsers(users, ds);
 		return Response.status(Response.Status.CREATED) // 201
 				.entity("List of users was successfully created").build();
 	}
@@ -263,7 +267,7 @@ public class UsersResource {
 	public Response partialUpdateUser(@PathParam("id") Long id, User user, @QueryParam(value = "ds") int ds)
 			throws AppException {
 		user.setId(id);
-		userService.updatePartiallyUser(user, ds);
+		userTran.updatePartiallyUser(user, ds);
 		return Response.status(Response.Status.OK)
 				// 200
 				.entity("The user you specified has been successfully updated")
@@ -347,7 +351,7 @@ public class UsersResource {
 	public Response deleteUser(@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
 		User user = new User();
 		user.setId(id);
-		userService.deleteUser(user, ds);
+		userTran.deleteUser(user, ds);
 		return Response.status(Response.Status.NO_CONTENT)// 204
 				.entity("User successfully removed from database").build();
 	}

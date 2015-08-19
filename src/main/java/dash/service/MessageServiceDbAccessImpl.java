@@ -47,7 +47,7 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 	public Long createMessage(Message message, Task task, int ds) throws AppException {
 		long messageId = messageDao.createMessage(message, ds);
 		message.setId(messageId);
-		aclController.createACL(message);
+		aclController.createACL(message, ds);
 		aclController.createAce(message, CustomPermission.READ);
 		aclController.createAce(message, CustomPermission.WRITE);
 		aclController.createAce(message, CustomPermission.DELETE);

@@ -57,7 +57,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 		long taskId = taskDao.createTask(task, ds);
 		task.setId(taskId);
-		aclController.createACL(task);
+		aclController.createACL(task, ds);
 		aclController.createAce(task, CustomPermission.MANAGER);
 		return taskId;
 	}

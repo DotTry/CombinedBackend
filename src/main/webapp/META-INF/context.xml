@@ -8,7 +8,7 @@
 		validationQuery="SELECT 1" validationInterval="34" testOnBorrow="true"
 		removeAbandoned="true" removeAbandonedTimeout="233" username="sqluser"
 		password="hs@SQL2011" driverClassName="com.mysql.jdbc.Driver"
-		url="jdbc:mysql://localhost:3306/new_chw?allowMultiQueries=true" />
+		url="jdbc:mysql://localhost:3306/chwApp?allowMultiQueries=true" />
 	<Resource name="jdbc/dashDB_VMA" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" initialSize="5"
 		maxActive="55" maxIdle="21" minIdle="13"

@@ -58,7 +58,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 		hour.setPending(true);
 		long hourId = hourDao.createHour(hour, ds);
 		hour.setId(hourId);
-		aclController.createACL(hour);
+		aclController.createACL(hour, ds);
 		aclController.createAce(hour, CustomPermission.READ);
 		aclController.createAce(hour, CustomPermission.WRITE);
 		aclController.createAce(hour, CustomPermission.DELETE);

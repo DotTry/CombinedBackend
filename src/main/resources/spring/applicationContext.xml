@@ -77,6 +77,8 @@
 
 	<bean id="userDao" class="dash.dao.UserDaoJPA2Impl" />
 	<bean id="userService" class="dash.service.UserServiceDbAccessImpl" />
+	<bean id="userSwitch" class="dash.tran.UserSwitch"/> 
+	<bean id="userTran" class="dash.tran.UserTransactionImpl"/> 
 	<bean id="userResource" class="dash.pojo.UsersResource" />
 
 	<bean id="groupDao" class="dash.dao.GroupDaoJPA2Impl" />

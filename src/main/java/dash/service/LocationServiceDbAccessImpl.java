@@ -62,7 +62,7 @@ LocationService {
 
 		long locationId = locationDao.createLocation(location, ds);
 		location.setId(locationId);
-		aclController.createACL(location);
+		aclController.createACL(location, ds);
 		if (user_name != null)
 			aclController.createAce(location, CustomPermission.MANAGER, new PrincipalSid(user_name));
 		else

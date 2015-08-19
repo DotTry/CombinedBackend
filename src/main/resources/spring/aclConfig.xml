@@ -28,12 +28,13 @@
 		implementation -->
 	<bean class="org.springframework.security.acls.AclPermissionEvaluator"
 		id="permissionEvaluator">
-		<constructor-arg ref="aclService" />
+		<constructor-arg ref="mutableAclService" />
 		<property name="permissionFactory" ref="permissionFactory" />
+		
 	</bean>
 	<!-- TODO: Multiple ACL services -->
 	<!-- Declare an acl service -->
-	<bean id="aclService"
+	<bean id="mutableAclService"
 		class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
 		<constructor-arg ref="dashDS_CHW" />
 		<constructor-arg ref="lookupStrategy" />
@@ -41,11 +42,29 @@
 		<property name="classIdentityQuery" value="SELECT @@IDENTITY" />
 		<property name="sidIdentityQuery" value="SELECT @@IDENTITY" />
 	</bean>
-
+	
+	 <bean id="mutableAclService2"
+		class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
+		<constructor-arg ref="dashDS_VMA" />
+		<constructor-arg ref="lookupStrategy2" />
+		<constructor-arg ref="aclCache2" />
+		<property name="classIdentityQuery" value="SELECT @@IDENTITY" />
+		<property name="sidIdentityQuery" value="SELECT @@IDENTITY" />
+	</bean><!-- -->
+	
 	<!-- Declare a lookup strategy -->
 	<bean id="lookupStrategy"
 		class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
 		<constructor-arg ref="dashDS_CHW" />
+		<constructor-arg ref="aclCache" />
+		<constructor-arg ref="aclAuthorizationStrategy" />
+		<constructor-arg ref="auditLogger" />
+		<property name="permissionFactory" ref="permissionFactory" />
+	</bean>
+	
+	<bean id="lookupStrategy2"
+		class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
+		<constructor-arg ref="dashDS_VMA" />
 		<constructor-arg ref="aclCache" />
 		<constructor-arg ref="aclAuthorizationStrategy" />
 		<constructor-arg ref="auditLogger" />
@@ -64,7 +83,18 @@
 			</bean>
 		</constructor-arg>
 	</bean>
-
+	<bean id="aclCache2"
+		class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
+		<constructor-arg>
+			<bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+				<property name="cacheManager">
+					<bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" />
+				</property>
+				<property name="cacheName" value="aclCache" />
+			</bean>
+		</constructor-arg>
+	</bean>
+	
 	<!-- Declare an acl authorization strategy -->
 	<bean id="aclAuthorizationStrategy" class="dash.security.CustomAuthorizationImpl">
 		<constructor-arg ref="roleHierarchy" />

@@ -25,13 +25,16 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 	@Autowired
 	private MutableAclService mutableAclService;
 
+	@Autowired
+	private MutableAclService mutableAclService2;
+	
 	/*
 	 * Creates/Updates the ACL of object and sets the owner to recipient object:
 	 * the object to create an ACL for (aka. registers the object) recipient:
 	 * the Sid of the user you wish to give ownership of the object (use new
 	 * PrincipleSid(String username) to generate this)
 	 */
-	public boolean createACL(T object, Sid recipient) {
+	public boolean createACL(T object, Sid recipient, int ds) {
 		MutableAcl acl;
 		ObjectIdentity oid;
 
@@ -42,15 +45,28 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 			e.printStackTrace();
 			return false;
 		}
-
-		try {
-			acl = (MutableAcl) mutableAclService.readAclById(oid);
-		} catch (NotFoundException nfe) {
-			acl = mutableAclService.createAcl(oid);
+		
+		switch(ds){
+		case 1:
+		{
+			try {
+				acl = (MutableAcl) mutableAclService.readAclById(oid);
+			} catch (NotFoundException nfe) {
+				acl = mutableAclService.createAcl(oid);
+			}
+			acl.setOwner(new PrincipalSid("Root"));
+			mutableAclService.updateAcl(acl);
 		}
-
-		acl.setOwner(new PrincipalSid("Root"));
-		mutableAclService.updateAcl(acl);
+		case 2:{
+			try {
+				acl = (MutableAcl) mutableAclService2.readAclById(oid);
+			} catch (NotFoundException nfe) {
+				acl = mutableAclService2.createAcl(oid);
+			}
+			acl.setOwner(new PrincipalSid("Root"));
+			mutableAclService.updateAcl(acl);
+		}
+		}
 
 		logger.debug("Added Acl for Sid " + recipient + " contact " + object);
 		return true;
@@ -62,7 +78,7 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 	 * Params object- the object to generate an ACL for
 	 */
 
-	public boolean createACL(T object) {
+	public boolean createACL(T object, int ds) {
 		MutableAcl acl;
 		ObjectIdentity oid;
 
@@ -73,15 +89,31 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 			e.printStackTrace();
 			return false;
 		}
+		
+		switch(ds){
+			case 1:
+			{
+				try {
+					acl = (MutableAcl) mutableAclService.readAclById(oid);
+				} catch (NotFoundException nfe) {
+					acl = mutableAclService.createAcl(oid);
+				}
 
-		try {
-			acl = (MutableAcl) mutableAclService.readAclById(oid);
-		} catch (NotFoundException nfe) {
-			acl = mutableAclService.createAcl(oid);
+				acl.setOwner(new PrincipalSid("Root"));
+				mutableAclService.updateAcl(acl);
+			}
+			case 2:
+			{
+				try {
+					acl = (MutableAcl) mutableAclService2.readAclById(oid);
+				} catch (NotFoundException nfe) {
+					acl = mutableAclService2.createAcl(oid);
+				}
+
+				acl.setOwner(new PrincipalSid("Root"));
+				mutableAclService2.updateAcl(acl);
+			}
 		}
-
-		acl.setOwner(new PrincipalSid("Root"));
-		mutableAclService.updateAcl(acl);
 
 		logger.debug("Added Acl for Sid " + getUsername() + " object "
 				+ object);
@@ -97,6 +129,7 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 	 * the user that will be granted permissions
 	 */
 	public boolean createAce(T object, Permission permission, Sid recipient) {
+		int ds = 1;
 		MutableAcl acl;
 		ObjectIdentity oid;
 
@@ -107,8 +140,16 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 			e.printStackTrace();
 			return false;
 		}
+		
 		try {
-			acl = (MutableAcl) mutableAclService.readAclById(oid);
+			if(ds == 1){
+				acl = (MutableAcl) mutableAclService.readAclById(oid);
+			}
+			else if(ds == 2){
+				acl = (MutableAcl) mutableAclService2.readAclById(oid);
+			}
+			else
+				acl = null;
 		} catch (NotFoundException nfe) {
 			nfe.printStackTrace();
 			return false;
@@ -125,12 +166,14 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 		acl.insertAce(acl.getEntries().size(), permission, recipient,
 				true);
 		mutableAclService.updateAcl(acl);
+		mutableAclService2.updateAcl(acl);
 		return true;
 	}
 
 	// Same as method above but gives the current "logged in" user the
 	// permission.
 	public boolean createAce(T object, Permission permission) {
+		int ds = 1;
 		MutableAcl acl;
 		ObjectIdentity oid;
 
@@ -142,7 +185,14 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 			return false;
 		}
 		try {
-			acl = (MutableAcl) mutableAclService.readAclById(oid);
+			if(ds == 1){
+				acl = (MutableAcl) mutableAclService.readAclById(oid);
+			}
+			else if(ds == 2){
+				acl = (MutableAcl) mutableAclService2.readAclById(oid);
+			}
+			else
+				acl = null;
 		} catch (NotFoundException nfe) {
 			nfe.printStackTrace();
 			return false;
@@ -152,10 +202,12 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 				getUsername()),
 				true);
 		mutableAclService.updateAcl(acl);
+		mutableAclService2.updateAcl(acl);
 		return true;
 	}
 	
 	public boolean setOwner(T object, Sid recipient){
+		int ds = 1;
 		MutableAcl acl;
 		ObjectIdentity oid;
 
@@ -167,7 +219,15 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 			return false;
 		}
 		try {
-			acl = (MutableAcl) mutableAclService.readAclById(oid);
+			if(ds == 1){
+				acl = (MutableAcl) mutableAclService.readAclById(oid);
+			}
+			else if(ds == 2){
+				acl = (MutableAcl) mutableAclService2.readAclById(oid);
+			}
+			else
+				acl = null;
+			
 		} catch (NotFoundException nfe) {
 			nfe.printStackTrace();
 			return false;
@@ -179,6 +239,7 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 	}
 	
 	public boolean setOwner(T object){
+		int ds = 1;
 		MutableAcl acl;
 		ObjectIdentity oid;
 
@@ -190,7 +251,15 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 			return false;
 		}
 		try {
-			acl = (MutableAcl) mutableAclService.readAclById(oid);
+			if(ds == 1){
+				acl = (MutableAcl) mutableAclService.readAclById(oid);
+			}
+			else if(ds == 2){
+				acl = (MutableAcl) mutableAclService2.readAclById(oid);
+			}
+			else
+				acl = null;
+			
 		} catch (NotFoundException nfe) {
 			nfe.printStackTrace();
 			return false;
@@ -202,10 +271,17 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 	}
 
 	public boolean deleteACL(T object) {
+		int ds = 1;
 		try {
 			ObjectIdentity oid = new ObjectIdentityImpl(object.getClass(),
 					((IAclObject) object).getId());
-			mutableAclService.deleteAcl(oid, false);
+			if(ds == 1){
+				mutableAclService.deleteAcl(oid, false);
+			}
+			else if(ds == 2){
+				mutableAclService2.deleteAcl(oid, false);
+			}
+			
 		} catch (ClassCastException e) {
 			e.printStackTrace();
 			return false;
@@ -223,6 +299,7 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 	 * whose permission you are revoking
 	 */
 	public boolean deleteACE(T object, Permission permission, Sid recipient) {
+		int ds = 1;
 		MutableAcl acl;
 		ObjectIdentity oid;
 
@@ -234,7 +311,15 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 			return false;
 		}
 		try {
-			acl = (MutableAcl) mutableAclService.readAclById(oid);
+			if(ds == 1){
+				acl = (MutableAcl) mutableAclService.readAclById(oid);
+			}
+			else if(ds == 2){
+				acl = (MutableAcl) mutableAclService2.readAclById(oid);
+			}
+			else
+				acl = null;
+			
 		} catch (NotFoundException nfe) {
 			nfe.printStackTrace();
 			return false;
@@ -250,6 +335,7 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 		}
 
 		mutableAclService.updateAcl(acl);
+		mutableAclService2.updateAcl(acl);
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Deleted " + object.getClass()
@@ -263,6 +349,7 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 	
 	//Deletes all aces of object for the permission given.
 	public boolean clearPermission(T object, Permission permission) {
+		int ds = 1;
 		MutableAcl acl;
 		ObjectIdentity oid;
 
@@ -274,7 +361,15 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 			return false;
 		}
 		try {
-			acl = (MutableAcl) mutableAclService.readAclById(oid);
+			if(ds == 1){
+				acl = (MutableAcl) mutableAclService.readAclById(oid);
+			}
+			else if(ds == 1){
+				acl = (MutableAcl) mutableAclService2.readAclById(oid);
+			}
+			else
+				acl = null;
+			
 		} catch (NotFoundException nfe) {
 			nfe.printStackTrace();
 			return false;
@@ -289,7 +384,7 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 		}
 
 		mutableAclService.updateAcl(acl);
-
+		mutableAclService2.updateAcl(acl);
 		if (logger.isDebugEnabled()) {
 			logger.debug("Deleted " + object.getClass()
 					+ ((IAclObject) object).getId()
@@ -302,7 +397,7 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 	
 	public boolean hasPermission(T object, Permission permission, Sid recipient)
 	{
-		
+		int ds = 1;
 		MutableAcl acl;
 		ObjectIdentity oid;
 
@@ -314,7 +409,15 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 			return false;
 		}
 		try {
-			acl = (MutableAcl) mutableAclService.readAclById(oid);
+			if(ds == 1){
+				acl = (MutableAcl) mutableAclService.readAclById(oid);
+			}
+			else if(ds == 1){
+				acl = (MutableAcl) mutableAclService2.readAclById(oid);
+			}
+			else
+				acl = null;
+			
 		} catch (NotFoundException nfe) {
 			nfe.printStackTrace();
 			return false;
@@ -327,13 +430,22 @@ public class GenericAclController<T> extends ApplicationObjectSupport {
 	}
 
 	public MutableAcl getAcl(T object){
+		int ds = 1;
 		MutableAcl acl;
 		ObjectIdentity oid;
 
 	
 		oid = new ObjectIdentityImpl(object.getClass(),
 				((IAclObject) object).getId());
-		acl = (MutableAcl) mutableAclService.readAclById(oid);
+		if(ds == 1){
+			acl = (MutableAcl) mutableAclService.readAclById(oid);
+		}
+		else if(ds == 2){
+			acl = (MutableAcl) mutableAclService2.readAclById(oid);
+		}
+		else
+			acl = null;
+		
 		
 		return acl;
 		
