@@ -45,9 +45,9 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 		long commentId = commentDao.createComment(comment, ds);
 		comment.setId(commentId);
 		aclController.createACL(comment, ds);
-		aclController.createAce(comment, CustomPermission.READ);
-		aclController.createAce(comment, CustomPermission.WRITE);
-		aclController.createAce(comment, CustomPermission.DELETE);
+		aclController.createAce(comment, CustomPermission.READ, ds);
+		aclController.createAce(comment, CustomPermission.WRITE, ds);
+		aclController.createAce(comment, CustomPermission.DELETE, ds);
 		return commentId;
 	}
 
@@ -125,7 +125,7 @@ public class CommentServiceDbAccessImpl extends ApplicationObjectSupport
 	@Override
 	public void deleteComment(Comment comment, int ds) {
 		commentDao.deleteCommentById(comment, ds);
-		aclController.deleteACL(comment);
+		aclController.deleteACL(comment, ds);
 
 	}
 }

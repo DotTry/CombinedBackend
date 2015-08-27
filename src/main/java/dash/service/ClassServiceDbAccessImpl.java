@@ -60,7 +60,7 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 		long classId = classDao.createClass(clas, ds);
 		clas.setId(classId);
 		aclController.createACL(clas, ds);
-		aclController.createAce(clas, CustomPermission.MANAGER);
+		aclController.createAce(clas, CustomPermission.MANAGER, 1);
 		return classId;
 	}
 
@@ -169,7 +169,7 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 	public void deleteClass(Class clas, Location loc, int ds) throws AppException {
 
 		classDao.deleteClass(clas, ds);
-		aclController.deleteACL(clas);
+		aclController.deleteACL(clas, 1);
 
 	}
 
@@ -209,14 +209,14 @@ public class ClassServiceDbAccessImpl extends ApplicationObjectSupport
 	@Transactional
 	public void addMember(User user, Class clas) throws AppException {
 		aclController.createAce(clas, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()));
+				new PrincipalSid(user.getUsername()), 1);
 	}
 
 	@Override
 	@Transactional
 	public void deleteMember(User user, Class clas) throws AppException {
 		aclController.deleteACE(clas, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()));
+				new PrincipalSid(user.getUsername()), 1);
 	}
 
 	@Override

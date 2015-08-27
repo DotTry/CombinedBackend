@@ -58,7 +58,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 		long taskId = taskDao.createTask(task, ds);
 		task.setId(taskId);
 		aclController.createACL(task, ds);
-		aclController.createAce(task, CustomPermission.MANAGER);
+		aclController.createAce(task, CustomPermission.MANAGER, ds);
 		return taskId;
 	}
 
@@ -218,7 +218,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	public void deleteTask(Task task, Group group, int ds) throws AppException {
 
 		taskDao.deleteTaskById(task, ds);
-		aclController.deleteACL(task);
+		aclController.deleteACL(task, ds);
 
 	}
 
@@ -265,11 +265,11 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 			throws AppException {
 		if (isGroupManager(user, group) || isGroupMember(user, group)) {
 			aclController.createAce(task, CustomPermission.MANAGER,
-					new PrincipalSid(user.getUsername()));
+					new PrincipalSid(user.getUsername()), 1);
 			if (aclController.hasPermission(task, CustomPermission.MEMBER,
-					new PrincipalSid(user.getUsername())))
+					new PrincipalSid(user.getUsername()), 1))
 				aclController.deleteACE(task, CustomPermission.MEMBER,
-						new PrincipalSid(user.getUsername()));
+						new PrincipalSid(user.getUsername()), 1);
 		} else {
 			throw new AppException(
 					Response.Status.CONFLICT.getStatusCode(),
@@ -288,13 +288,13 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 		Group group = new Group();
 		group.setId(task.getGroup_id());
 		if (isGroupManager(user, group) || isGroupMember(user, group)) {
-			aclController.clearPermission(task, CustomPermission.MANAGER);
+			aclController.clearPermission(task, CustomPermission.MANAGER, 1);
 			aclController.createAce(task, CustomPermission.MANAGER,
-					new PrincipalSid(user.getUsername()));
+					new PrincipalSid(user.getUsername()), 1);
 			if (aclController.hasPermission(task, CustomPermission.MEMBER,
-					new PrincipalSid(user.getUsername())))
+					new PrincipalSid(user.getUsername()), 1))
 				aclController.deleteACE(task, CustomPermission.MEMBER,
-						new PrincipalSid(user.getUsername()));
+						new PrincipalSid(user.getUsername()), 1);
 		} else {
 			throw new AppException(
 					Response.Status.CONFLICT.getStatusCode(),
@@ -312,9 +312,9 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	public void deleteManager(User user, Task task, Group group)
 			throws AppException {
 		aclController.deleteACE(task, CustomPermission.MANAGER,
-				new PrincipalSid(user.getUsername()));
+				new PrincipalSid(user.getUsername()), 1);
 		aclController.createAce(task, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()));
+				new PrincipalSid(user.getUsername()), 1);
 	}
 
 	// Adds a member to the task
@@ -325,11 +325,11 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 		group.setId(task.getGroup_id());
 		if (isGroupManager(user, group) || isGroupMember(user, group)) {
 			aclController.createAce(task, CustomPermission.MEMBER,
-					new PrincipalSid(user.getUsername()));
+					new PrincipalSid(user.getUsername()), 1);
 			if (aclController.hasPermission(task, CustomPermission.MANAGER,
-					new PrincipalSid(user.getUsername())))
+					new PrincipalSid(user.getUsername()), 1))
 				aclController.deleteACE(task, CustomPermission.MANAGER,
-						new PrincipalSid(user.getUsername()));
+						new PrincipalSid(user.getUsername()), 1);
 		} else {
 			throw new AppException(
 					Response.Status.CONFLICT.getStatusCode(),
@@ -348,7 +348,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	public void deleteMember(User user, Task task, Group group)
 			throws AppException {
 		aclController.deleteACE(task, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()));
+				new PrincipalSid(user.getUsername()), 1);
 	}
 
 	/*********************** Helper Methods **************************************/
@@ -358,12 +358,12 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	// they are redundant
 	private boolean isGroupManager(User user, Group group) {
 		return groupAclController.hasPermission(group,
-				CustomPermission.MANAGER, new PrincipalSid(user.getUsername()));
+				CustomPermission.MANAGER, new PrincipalSid(user.getUsername()), 1);
 	}
 
 	private boolean isGroupMember(User user, Group group) {
 		return groupAclController.hasPermission(group, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()));
+				new PrincipalSid(user.getUsername()), 1);
 	}
 
 }

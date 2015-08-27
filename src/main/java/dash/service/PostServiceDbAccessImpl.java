@@ -47,9 +47,9 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 		long postId = postDao.createPost(post, ds);
 		post.setId(postId);
 		aclController.createACL(post, ds);
-		aclController.createAce(post, CustomPermission.READ);
-		aclController.createAce(post, CustomPermission.WRITE);
-		aclController.createAce(post, CustomPermission.DELETE);
+		aclController.createAce(post, CustomPermission.READ, ds);
+		aclController.createAce(post, CustomPermission.WRITE, ds);
+		aclController.createAce(post, CustomPermission.DELETE, ds);
 		return postId;
 	}
 
@@ -170,7 +170,7 @@ public class PostServiceDbAccessImpl extends ApplicationObjectSupport implements
 	public void deletePost(Post post, int ds) {
 
 		postDao.deletePostById(post, ds);
-		aclController.deleteACL(post);
+		aclController.deleteACL(post, ds);
 
 	}
 

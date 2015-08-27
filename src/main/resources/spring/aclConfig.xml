@@ -28,12 +28,15 @@
 		implementation -->
 	<bean class="org.springframework.security.acls.AclPermissionEvaluator"
 		id="permissionEvaluator">
-		<constructor-arg ref="mutableAclService" />
+		<constructor-arg ref="mutableAclServiceCHW" />
 		<property name="permissionFactory" ref="permissionFactory" />
-		
+
+
 	</bean>
 	<!-- TODO: Multiple ACL services -->
 	<!-- Declare an acl service -->
+
+	<!-- This should be deleted when finished -->
 	<bean id="mutableAclService"
 		class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
 		<constructor-arg ref="dashDS_CHW" />
@@ -42,8 +45,17 @@
 		<property name="classIdentityQuery" value="SELECT @@IDENTITY" />
 		<property name="sidIdentityQuery" value="SELECT @@IDENTITY" />
 	</bean>
-	
-	 <bean id="mutableAclService2"
+
+	<bean id="mutableAclServiceCHW"
+		class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
+		<constructor-arg ref="dashDS_CHW" />
+		<constructor-arg ref="lookupStrategy" />
+		<constructor-arg ref="aclCache" />
+		<property name="classIdentityQuery" value="SELECT @@IDENTITY" />
+		<property name="sidIdentityQuery" value="SELECT @@IDENTITY" />
+	</bean>
+
+	<bean id="mutableAclServiceVMA"
 		class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
 		<constructor-arg ref="dashDS_VMA" />
 		<constructor-arg ref="lookupStrategy2" />
@@ -51,7 +63,7 @@
 		<property name="classIdentityQuery" value="SELECT @@IDENTITY" />
 		<property name="sidIdentityQuery" value="SELECT @@IDENTITY" />
 	</bean><!-- -->
-	
+
 	<!-- Declare a lookup strategy -->
 	<bean id="lookupStrategy"
 		class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
@@ -61,11 +73,11 @@
 		<constructor-arg ref="auditLogger" />
 		<property name="permissionFactory" ref="permissionFactory" />
 	</bean>
-	
+
 	<bean id="lookupStrategy2"
 		class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
 		<constructor-arg ref="dashDS_VMA" />
-		<constructor-arg ref="aclCache" />
+		<constructor-arg ref="aclCache2" />
 		<constructor-arg ref="aclAuthorizationStrategy" />
 		<constructor-arg ref="auditLogger" />
 		<property name="permissionFactory" ref="permissionFactory" />
@@ -90,11 +102,11 @@
 				<property name="cacheManager">
 					<bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" />
 				</property>
-				<property name="cacheName" value="aclCache" />
+				<property name="cacheName" value="aclCache2" />
 			</bean>
 		</constructor-arg>
 	</bean>
-	
+
 	<!-- Declare an acl authorization strategy -->
 	<bean id="aclAuthorizationStrategy" class="dash.security.CustomAuthorizationImpl">
 		<constructor-arg ref="roleHierarchy" />
@@ -116,8 +128,8 @@
 		</constructor-arg>
 	</bean>
 
-  <bean id="permissionFactory" class="dash.security.CustomPermissionFactory"/>
-
+	<bean id="permissionFactory" class="dash.security.CustomPermissionFactory" />
+	
 	<!-- Declare a permissionGrantingStrategy -->
 	<bean id="auditLogger"
 		class="org.springframework.security.acls.domain.ConsoleAuditLogger" />
@@ -134,5 +146,4 @@
 			</value>
 		</property>
 	</bean>
-
 </beans>

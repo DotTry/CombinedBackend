@@ -91,7 +91,6 @@ public class LocationDaoJPA2Impl implements LocationDao {
 
 	@Override
 	public Long createLocation(Location location, int ds) {
-		
 		location.setCreation_timestamp(new Date());
 		if(ds == 1){
 		entityManagerCHW.persist(location);

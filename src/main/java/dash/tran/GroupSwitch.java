@@ -46,8 +46,10 @@ public class GroupSwitch extends ApplicationObjectSupport{
 		switch (ds){ 
 		case 1:
 			transaction.deleteGroup1(group, ds, groupService);
+			break;
 		case 2:
 			transaction.deleteGroup2(group, ds, groupService);
+			break;
 		default:
 		};
 
@@ -69,10 +71,73 @@ public class GroupSwitch extends ApplicationObjectSupport{
 		switch (ds){ 
 		case 1:
 			transaction.updatePartiallyGroup1(group, ds, groupService);
+			break;
 		case 2:
 			transaction.updatePartiallyGroup2(group, ds, groupService);
+			break;
 		default:
 			
+		}
+	}
+	
+	public void addManager(User user, Group group, int ds) throws AppException {
+		switch (ds){ 
+		case 1:
+			transaction.addManager1(user, group, ds, groupService);
+			break;
+		case 2:
+			transaction.addManager2(user, group, ds, groupService);
+			break;
+		default:
+		}
+	}
+
+	public void resetManager(User user, Group group, int ds)
+			throws AppException {
+		switch (ds){ 
+		case 1:
+			transaction.resetManager1(user, group, ds, groupService);
+			break;
+		case 2:
+			transaction.resetManager2(user, group, ds, groupService);
+			break;
+		default:
+		}
+	}
+	
+	public void deleteManager(User user, Group group, int ds) throws AppException {
+		switch (ds){ 
+		case 1:
+			transaction.deleteManager1(user, group, ds, groupService);
+			break;
+		case 2:
+			transaction.deleteManager2(user, group, ds, groupService);
+			break;
+		default:
+		}
+	}
+	
+	public void addMember(User user, Group group, int ds) throws AppException {
+		switch (ds){ 
+		case 1:
+			transaction.addMember1(user, group, ds, groupService);
+			break;
+		case 2:
+			transaction.addMember2(user, group, ds, groupService);
+			break;
+		default:
+		}
+	}
+	
+	public void deleteMember(User user, Group group, int ds) throws AppException {
+		switch (ds){ 
+		case 1:
+			transaction.deleteMember1(user, group, ds, groupService);
+			break;
+		case 2:
+			transaction.deleteMember2(user, group, ds, groupService);
+			break;
+		default:
 		}
 	}
 }

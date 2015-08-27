@@ -23,6 +23,7 @@ import dash.errorhandling.AppException;
 import dash.service.LocationService;
 import dash.service.UserService;
 import dash.tran.ClassSwitch;
+import dash.tran.LocationSwitch;
 
 @Component
 @Path("/locations")
@@ -35,13 +36,13 @@ public class LocationResource {
 	private UserService userService;
 	
 	@Autowired
-	private ClassSwitch classTransaction;
+	private LocationSwitch locationTran;
 	
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML })
 	public Response createLocation(Location location, @QueryParam("userName") String user_name, @QueryParam(value = "ds") int ds) throws AppException {
-		Long createLocationId = locationService.createLocation(location, user_name, ds);
+		Long createLocationId = locationTran.createLocation(location, user_name, ds);
 		return Response.status(Response.Status.CREATED)
 				// 201
 				.entity("A new location has been created")

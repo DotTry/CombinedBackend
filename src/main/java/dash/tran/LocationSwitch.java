@@ -38,22 +38,22 @@ public class LocationSwitch extends ApplicationObjectSupport{
 	private LocationService locationService;
 
 	@Autowired
-	private ClassTransactionImpl transaction;
+	private LocationTransactionImpl transaction;
 	/*********************
 	 * Create related methods implementation
 	 ***********************/
 
-//	public Long createLocation(Location location, String user_name, int ds) throws AppException {
-//
-//		switch (ds){ 
-//		case 1:
-//			transaction.createLocation1(location, user_name, ds, locationService);
-//		case 2:
-//			transaction.createLocation2(location, user_name, ds, locationService);
-//		default:
-//			return (long)00;
-//		}
-//		
-//	}
+	public Long createLocation(Location location, String user_name, int ds) throws AppException {
+
+		switch (ds){ 
+		case 1:
+			transaction.createLocation1(location, user_name, ds, locationService);
+		case 2:
+			transaction.createLocation2(location, user_name, ds, locationService);
+		default:
+			return (long)00;
+		}
+		
+	}
 	
 }

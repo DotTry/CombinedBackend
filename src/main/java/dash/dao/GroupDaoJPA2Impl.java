@@ -104,7 +104,6 @@ public class GroupDaoJPA2Impl implements GroupDao {
 
 	@Override
 	public Long createGroup(Group group, int ds) {
-
 		group.setCreation_timestamp(new Date());
 		if(ds == 1){
 			entityManagerCHW.persist(group);

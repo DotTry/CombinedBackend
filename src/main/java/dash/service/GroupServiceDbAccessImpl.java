@@ -59,11 +59,10 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 					"Please verify that the groupname and password are properly generated",
 					AppConstants.DASH_POST_URL);
 		}
-
 		long groupId = groupDao.createGroup(group, ds);
 		group.setId(groupId);
 		aclController.createACL(group, ds);
-		aclController.createAce(group, CustomPermission.MANAGER);
+		aclController.createAce(group, CustomPermission.MANAGER, ds);
 		return groupId;
 	}
 
@@ -202,7 +201,7 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 	@Override
 	public void deleteGroup(Group group, int ds) {
 		groupDao.deleteGroupById(group, ds);
-		aclController.deleteACL(group);
+		aclController.deleteACL(group, ds);
 
 	}
 
@@ -242,68 +241,63 @@ public class GroupServiceDbAccessImpl extends ApplicationObjectSupport
 	 */
 	// Adds an additional manager to the group
 	@Override
-	@Transactional
-	public void addManager(User user, Group group) throws AppException {
+	public void addManager(User user, Group group, int ds) throws AppException {
 
 		aclController.createAce(group, CustomPermission.MANAGER,
-				new PrincipalSid(user.getUsername()));
+				new PrincipalSid(user.getUsername()), ds);
 		if (aclController.hasPermission(group, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername())))
+				new PrincipalSid(user.getUsername()), ds))
 			aclController.deleteACE(group, CustomPermission.MEMBER,
-					new PrincipalSid(user.getUsername()));
+					new PrincipalSid(user.getUsername()), ds);
 
 	}
 
 	// Removes all managers and sets new manager to user
 	@Override
-	@Transactional
-	public void resetManager(User user, Group group) throws AppException {
-		aclController.clearPermission(group, CustomPermission.MANAGER);
+	public void resetManager(User user, Group group, int ds) throws AppException {
+		aclController.clearPermission(group, CustomPermission.MANAGER, ds);
 		aclController.createAce(group, CustomPermission.MANAGER,
-				new PrincipalSid(user.getUsername()));
+				new PrincipalSid(user.getUsername()), ds);
 		if (aclController.hasPermission(group, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername())))
+				new PrincipalSid(user.getUsername()), ds))
 			aclController.deleteACE(group, CustomPermission.MEMBER,
-					new PrincipalSid(user.getUsername()));
+					new PrincipalSid(user.getUsername()), ds);
 
 	}
 
 	// Removes a single manager from a group
 	@Override
-	@Transactional
-	public void deleteManager(User user, Group group) throws AppException {
+	public void deleteManager(User user, Group group, int ds) throws AppException {
 		aclController.deleteACE(group, CustomPermission.MANAGER,
-				new PrincipalSid(user.getUsername()));
+				new PrincipalSid(user.getUsername()), ds);
 		aclController.createAce(group, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()));
+				new PrincipalSid(user.getUsername()), ds);
 	}
 
 	// Adds a member to the group
 	@Override
-	@Transactional
-	public void addMember(User user, Group group) throws AppException {
+	public void addMember(User user, Group group, int ds) throws AppException {
 		aclController.createAce(group, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()));
+				new PrincipalSid(user.getUsername()), ds);
 		if (aclController.hasPermission(group, CustomPermission.MANAGER,
-				new PrincipalSid(user.getUsername())))
+				new PrincipalSid(user.getUsername()), ds))
 			aclController.deleteACE(group, CustomPermission.MANAGER,
-					new PrincipalSid(user.getUsername()));
+					new PrincipalSid(user.getUsername()), ds);
 
 	}
 
 	// Removes single member
 	@Override
-	@Transactional
-	public void deleteMember(User user, Group group) throws AppException {
+	public void deleteMember(User user, Group group, int ds) throws AppException {
 		List<Task> tasks = taskService.getTasksByGroup(group);
 		for (int i = 0; i < tasks.size(); i++) {
 			taskAclController.deleteACE(tasks.get(i), CustomPermission.MEMBER,
-					new PrincipalSid(user.getUsername()));
+					new PrincipalSid(user.getUsername()), ds);
 			taskAclController.deleteACE(tasks.get(i), CustomPermission.MANAGER,
-					new PrincipalSid(user.getUsername()));
+					new PrincipalSid(user.getUsername()), ds);
 		}
 		aclController.deleteACE(group, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()));
+				new PrincipalSid(user.getUsername()), ds);
 	}
 
 }

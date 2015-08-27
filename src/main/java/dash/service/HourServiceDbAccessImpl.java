@@ -59,9 +59,9 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 		long hourId = hourDao.createHour(hour, ds);
 		hour.setId(hourId);
 		aclController.createACL(hour, ds);
-		aclController.createAce(hour, CustomPermission.READ);
-		aclController.createAce(hour, CustomPermission.WRITE);
-		aclController.createAce(hour, CustomPermission.DELETE);
+		aclController.createAce(hour, CustomPermission.READ, ds);
+		aclController.createAce(hour, CustomPermission.WRITE, ds);
+		aclController.createAce(hour, CustomPermission.DELETE, ds);
 		return hourId;
 	}
 
@@ -176,7 +176,7 @@ public class HourServiceDbAccessImpl extends ApplicationObjectSupport implements
 	public void deleteHour(Hour hour, int ds) {
 
 		hourDao.deleteHourById(hour, ds);
-		aclController.deleteACL(hour);
+		aclController.deleteACL(hour, ds);
 
 	}
 

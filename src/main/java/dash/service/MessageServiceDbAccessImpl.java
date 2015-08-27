@@ -48,9 +48,9 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 		long messageId = messageDao.createMessage(message, ds);
 		message.setId(messageId);
 		aclController.createACL(message, ds);
-		aclController.createAce(message, CustomPermission.READ);
-		aclController.createAce(message, CustomPermission.WRITE);
-		aclController.createAce(message, CustomPermission.DELETE);
+		aclController.createAce(message, CustomPermission.READ, ds);
+		aclController.createAce(message, CustomPermission.WRITE, ds);
+		aclController.createAce(message, CustomPermission.DELETE, ds);
 		return messageId;
 	}
 
@@ -135,7 +135,7 @@ public class MessageServiceDbAccessImpl extends ApplicationObjectSupport
 	public void deleteMessage(Message message, int ds) {
 
 		messageDao.deleteMessageById(message, ds);
-		aclController.deleteACL(message);
+		aclController.deleteACL(message, ds);
 
 	}
 

@@ -168,11 +168,11 @@ public class GroupResource {
 	@Path("{id}/MANAGER/{user}")
 	@Produces({ MediaType.TEXT_HTML })
 	public Response resetManager(@PathParam("user") Long userId,
-			@PathParam("id") Long id) throws AppException {
+			@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
 		User user = userService.getUserById(userId);
 		Group group = new Group();
 		group.setId(id);
-		groupService.resetManager(user, group);
+		groupTran.resetManager(user, group, ds);
 		return Response
 				.status(Response.Status.OK)
 				.entity("MANAGER RESET: User " + user.getUsername()
@@ -184,11 +184,11 @@ public class GroupResource {
 	@Path("{id}/MANAGER/{user}")
 	@Produces({ MediaType.TEXT_HTML })
 	public Response addManager(@PathParam("user") Long userId,
-			@PathParam("id") Long id) throws AppException {
+			@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
 		User user = userService.getUserById(userId);
 		Group group = new Group();
 		group.setId(id);
-		groupService.addManager(user, group);
+		groupTran.addManager(user, group, ds);
 		return Response
 				.status(Response.Status.OK)
 				.entity("MANAGER ADDED: User " + user.getUsername()
@@ -200,11 +200,11 @@ public class GroupResource {
 	@Path("{id}/MANAGER/{user}")
 	@Produces({ MediaType.TEXT_HTML })
 	public Response deleteManager(@PathParam("user") Long userId,
-			@PathParam("id") Long id) throws AppException {
+			@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
 		User user = userService.getUserById(userId);
 		Group group = new Group();
 		group.setId(id);
-		groupService.deleteManager(user, group);
+		groupTran.deleteManager(user, group, ds);
 		return Response
 				.status(Response.Status.OK)
 				.entity("MANAGER DELETED: User " + user.getUsername()
@@ -216,11 +216,11 @@ public class GroupResource {
 	@Path("{id}/MEMBER/{user}")
 	@Produces({ MediaType.TEXT_HTML })
 	public Response addMember(@PathParam("user") Long userId,
-			@PathParam("id") Long id) throws AppException {
+			@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
 		User user = userService.getUserById(userId);
 		Group group = new Group();
 		group.setId(id);
-		groupService.addMember(user, group);
+		groupTran.addMember(user, group, ds);
 		return Response
 				.status(Response.Status.OK)
 				.entity("MEMBER ADDED: User " + user.getUsername()
@@ -231,11 +231,11 @@ public class GroupResource {
 	@Path("{id}/MEMBER/{user}")
 	@Produces({ MediaType.TEXT_HTML })
 	public Response deleteMember(@PathParam("user") Long userId,
-			@PathParam("id") Long id) throws AppException {
+			@PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException {
 		User user = userService.getUserById(userId);
 		Group group = new Group();
 		group.setId(id);
-		groupService.deleteMember(user, group);
+		groupTran.deleteMember(user, group, ds);
 		return Response
 				.status(Response.Status.OK)
 				.entity("MEMBER DELETED: User " + user.getUsername()
