@@ -260,16 +260,15 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 	 */
 	// Adds an additional manager to the task
 	@Override
-	@Transactional
-	public void addManager(User user, Task task, Group group)
+	public void addManager(User user, Task task, Group group, int ds)
 			throws AppException {
 		if (isGroupManager(user, group) || isGroupMember(user, group)) {
 			aclController.createAce(task, CustomPermission.MANAGER,
-					new PrincipalSid(user.getUsername()), 1);
+					new PrincipalSid(user.getUsername()), ds);
 			if (aclController.hasPermission(task, CustomPermission.MEMBER,
-					new PrincipalSid(user.getUsername()), 1))
+					new PrincipalSid(user.getUsername()), ds))
 				aclController.deleteACE(task, CustomPermission.MEMBER,
-						new PrincipalSid(user.getUsername()), 1);
+						new PrincipalSid(user.getUsername()), ds);
 		} else {
 			throw new AppException(
 					Response.Status.CONFLICT.getStatusCode(),
@@ -283,8 +282,7 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	// Removes all managers and sets new manager to user
 	@Override
-	@Transactional
-	public void resetManager(User user, Task task) throws AppException {
+	public void resetManager(User user, Task task, int ds) throws AppException {
 		Group group = new Group();
 		group.setId(task.getGroup_id());
 		if (isGroupManager(user, group) || isGroupMember(user, group)) {
@@ -308,28 +306,26 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	// Removes a single manager from a task
 	@Override
-	@Transactional
-	public void deleteManager(User user, Task task, Group group)
+	public void deleteManager(User user, Task task, Group group, int ds)
 			throws AppException {
 		aclController.deleteACE(task, CustomPermission.MANAGER,
-				new PrincipalSid(user.getUsername()), 1);
+				new PrincipalSid(user.getUsername()), ds);
 		aclController.createAce(task, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()), 1);
+				new PrincipalSid(user.getUsername()), ds);
 	}
 
 	// Adds a member to the task
 	@Override
-	@Transactional
-	public void addMember(User user, Task task) throws AppException {
+	public void addMember(User user, Task task, int ds) throws AppException {
 		Group group = new Group();
 		group.setId(task.getGroup_id());
 		if (isGroupManager(user, group) || isGroupMember(user, group)) {
 			aclController.createAce(task, CustomPermission.MEMBER,
-					new PrincipalSid(user.getUsername()), 1);
+					new PrincipalSid(user.getUsername()), ds);
 			if (aclController.hasPermission(task, CustomPermission.MANAGER,
-					new PrincipalSid(user.getUsername()), 1))
+					new PrincipalSid(user.getUsername()), ds))
 				aclController.deleteACE(task, CustomPermission.MANAGER,
-						new PrincipalSid(user.getUsername()), 1);
+						new PrincipalSid(user.getUsername()), ds);
 		} else {
 			throw new AppException(
 					Response.Status.CONFLICT.getStatusCode(),
@@ -344,11 +340,10 @@ public class TaskServiceDbAccessImpl extends ApplicationObjectSupport implements
 
 	// Removes single member
 	@Override
-	@Transactional
-	public void deleteMember(User user, Task task, Group group)
+	public void deleteMember(User user, Task task, Group group, int ds)
 			throws AppException {
 		aclController.deleteACE(task, CustomPermission.MEMBER,
-				new PrincipalSid(user.getUsername()), 1);
+				new PrincipalSid(user.getUsername()), ds);
 	}
 
 	/*********************** Helper Methods **************************************/

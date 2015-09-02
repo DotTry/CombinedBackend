@@ -162,11 +162,11 @@ public class LocationResource {
 	@PUT
 	@Path("{id}/MANAGER/{user}")
 	@Produces({MediaType.TEXT_HTML})
-	public Response resetManager(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException{
+	public Response resetManager(@PathParam("user") Long userId, @PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException{
 		User user= userService.getUserById(userId);
 		Location location= new Location();
 		location.setId(id);
-		locationService.resetManager(user, location);
+		locationTran.resetManager(user, location, ds);
 		return Response.status(Response.Status.OK).entity("MANAGER RESET: User "+user.getUsername()
 				+" set as sole MANAGER for location "+ location.getId()).build();
 	}
@@ -174,11 +174,11 @@ public class LocationResource {
 	@POST
 	@Path("{id}/MANAGER/{user}")
 	@Produces({MediaType.TEXT_HTML})
-	public Response addManager(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException{
+	public Response addManager(@PathParam("user") Long userId, @PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException{
 		User user= userService.getUserById(userId);
 		Location location= new Location();
 		location.setId(id);
-		locationService.addManager(user, location);
+		locationTran.addManager(user, location, ds);
 		return Response.status(Response.Status.OK).entity("MANAGER ADDED: User "+user.getUsername()
 				+" added as a MANAGER for location "+ location.getId()).build();
 	}
@@ -186,11 +186,11 @@ public class LocationResource {
 	@DELETE
 	@Path("{id}/MANAGER/{user}")
 	@Produces({MediaType.TEXT_HTML})
-	public Response deleteManager(@PathParam("user") Long userId, @PathParam("id") Long id) throws AppException{
+	public Response deleteManager(@PathParam("user") Long userId, @PathParam("id") Long id, @QueryParam(value = "ds") int ds) throws AppException{
 		User user= userService.getUserById(userId);
 		Location location= new Location();
 		location.setId(id);
-		locationService.deleteManager(user, location);
+		locationTran.deleteManager(user, location, ds);
 		return Response.status(Response.Status.OK).entity("MANAGER DELETED: User "+user.getUsername()
 				+" removed as MANAGER for location "+ location.getId()).build();
 	}

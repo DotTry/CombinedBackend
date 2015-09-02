@@ -77,4 +77,57 @@ public class TaskSwitch extends ApplicationObjectSupport{
 		default:
 		}
 	}
+	
+	public void addManager(User user, Task task, Group group, int ds)
+			throws AppException {
+		switch(ds){
+		case 1:
+			transaction.addManager1(user, task, group, ds, taskService);
+		case 2:
+			transaction.addManager2(user, task, group, ds, taskService);
+		default:
+		}
+	}
+	
+	public void resetManager(User user, Task task, int ds) throws AppException {
+		switch(ds){
+		case 1:
+			transaction.resetManager1(user, task, ds, taskService);
+		case 2:
+			transaction.resetManager2(user, task, ds, taskService);
+		default:
+		}
+	}
+	
+	public void deleteManager(User user, Task task, Group group, int ds)
+			throws AppException {
+		switch(ds){
+		case 1:
+			transaction.deleteManager1(user, task, group, ds, taskService);
+		case 2:
+			transaction.deleteManager2(user, task, group, ds, taskService);
+		default:
+		}
+	}
+	
+	public void addMember(User user, Task task, int ds) throws AppException {
+		switch(ds){
+		case 1:
+			transaction.addMember1(user, task, ds, taskService);
+		case 2:
+			transaction.addMember2(user, task, ds, taskService);
+		default:
+		}
+	}
+	
+	public void deleteMember(User user, Task task, Group group, int ds)
+			throws AppException {
+		switch(ds){
+		case 1:
+			transaction.deleteMember1(user, task, group, ds, taskService);
+		case 2:
+			transaction.deleteMember2(user, task, group, ds, taskService);
+		default:
+		}
+	}
 }

@@ -221,7 +221,7 @@ public class TaskResource {
 	@PUT
 	@Path("{id}/MANAGER/{user}")
 	@Produces({MediaType.TEXT_HTML})
-	public Response resetManager(@PathParam("user") Long userId, @PathParam("id") Long id)
+	public Response resetManager(@PathParam("user") Long userId, @PathParam("id") Long id, @QueryParam(value = "ds") int ds)
 	throws AppException
 	{
 		User user= userService.getUserById(userId);
@@ -229,7 +229,7 @@ public class TaskResource {
 		try {
 			Task task = taskService.getTaskById(id);
 			group.setId(task.getGroup_id());
-			taskService.resetManager(user, task);
+			taskTran.resetManager(user, task, ds);
 			
 			return Response
 					.status(Response.Status.OK)
@@ -247,7 +247,7 @@ public class TaskResource {
 	@POST
 	@Path("{id}/MANAGER/{user}")
 	@Produces({MediaType.TEXT_HTML})
-	public Response addManager(@PathParam("user") Long userId, @PathParam("id") Long id)
+	public Response addManager(@PathParam("user") Long userId, @PathParam("id") Long id, @QueryParam(value = "ds") int ds)
 	throws AppException
 	{
 		User user= userService.getUserById(userId);
@@ -256,7 +256,7 @@ public class TaskResource {
 		try {
 			Task task = taskService.getTaskById(id);
 			group.setId(task.getGroup_id());
-			taskService.addManager(user, task, group);
+			taskTran.addManager(user, task, group, ds);
 			return Response
 					.status(Response.Status.OK)
 					.entity("MANAGER ADDED: User " + user.getUsername()
@@ -274,7 +274,7 @@ public class TaskResource {
 	@DELETE
 	@Path("{id}/MANAGER/{user}")
 	@Produces({MediaType.TEXT_HTML})
-	public Response deleteManager(@PathParam("user") Long userId, @PathParam("id") Long id)
+	public Response deleteManager(@PathParam("user") Long userId, @PathParam("id") Long id, @QueryParam(value = "ds") int ds)
 	throws AppException
 	{
 		User user= userService.getUserById(userId);
@@ -283,7 +283,7 @@ public class TaskResource {
 		try {
 			Task task = taskService.getTaskById(id);
 			group.setId(task.getGroup_id());
-			taskService.deleteManager(user, task, group);
+			taskTran.deleteManager(user, task, group, ds);
 			return Response.status(Response.Status.OK).entity("MANAGER DELETED: User "+user.getUsername()
 					+" removed as MANAGER for task "+task.getId()).build();
 		} catch (AppException ex) {
@@ -298,12 +298,12 @@ public class TaskResource {
 	@POST
 	@Path("{id}/MEMBER/{user}")
 	@Produces({MediaType.TEXT_HTML})
-	public Response addMember(@PathParam("user") Long userId, @PathParam("id") Long id)
+	public Response addMember(@PathParam("user") Long userId, @PathParam("id") Long id, @QueryParam(value = "ds") int ds)
 	throws AppException
 	{
 		User user= userService.getUserById(userId);
 		Task task= taskService.getTaskById(id);
-		taskService.addMember(user, task);
+		taskTran.addMember(user, task, ds);
 		return Response.status(Response.Status.OK).entity("MEMBER ADDED: User "+user.getUsername()
 				+" set as MEMBER for task "+task.getId()).build();
 	}
@@ -311,7 +311,7 @@ public class TaskResource {
 	@DELETE
 	@Path("{id}/MEMBER/{user}")
 	@Produces({MediaType.TEXT_HTML})
-	public Response deleteMember(@PathParam("user") Long userId, @PathParam("id") Long id)
+	public Response deleteMember(@PathParam("user") Long userId, @PathParam("id") Long id, @QueryParam(value = "ds") int ds)
 		throws AppException
 	{
 		User user= userService.getUserById(userId);
@@ -329,7 +329,7 @@ public class TaskResource {
 		else{
 			group.setId(task.getGroup_id());
 		}
-		taskService.deleteMember(user, task, group);
+		taskTran.deleteMember(user, task, group, ds);
 		return Response.status(Response.Status.OK).entity("MEMBER DELETED: User "+user.getUsername()
 				+" removed as MEMBER from task "+task.getId()).build();
 	}

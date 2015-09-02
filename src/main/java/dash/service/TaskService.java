@@ -82,25 +82,25 @@ public interface TaskService {
 	// Adds an additional manager to the task
 	@PreAuthorize("hasPermission(#task, 'MANAGER') or hasPermission(#group, 'manager') "
 			+ "or hasRole('ROLE_ADMIN')")
-	public void addManager(User user, Task task, Group group) throws AppException;
+	public void addManager(User user, Task task, Group group, int ds) throws AppException;
 	
 	//Removes all managers and sets new manager to user
 	@PreAuthorize("hasRole('ROLE_MODERATOR')")
-	public void resetManager(User user, Task task) throws AppException;
+	public void resetManager(User user, Task task, int ds) throws AppException;
 	
 	//Removes a single manager from a task
 	@PreAuthorize("hasPermission(#user, 'WRITE')  or hasPermission(#group, 'manager') "
 			+ "or hasRole('ROLE_MODERATOR')")
-	public void deleteManager(User user, Task task, Group group) throws AppException;
+	public void deleteManager(User user, Task task, Group group, int ds) throws AppException;
 	
 	//Adds a member to the task
 	@PreAuthorize("hasRole('ROLE_USER')")
-	public void addMember(User user, Task task) throws AppException;
+	public void addMember(User user, Task task, int ds) throws AppException;
 	
 	//Removes member
 	@PreAuthorize("hasPermission(#user, 'WRITE') or hasPermission(#group, 'manager') "
 			+ "or hasRole('ROLE_MODERATOR') or hasPermission(#task, 'MANAGER')")
-	public void deleteMember(User user, Task task, Group group) throws AppException;	
+	public void deleteMember(User user, Task task, Group group, int ds) throws AppException;	
 
 	/*
 	 * ******************** Helper methods **********************

@@ -73,14 +73,14 @@ public interface LocationService {
 	 */
 	// Adds an additional manager to the location
 	@PreAuthorize("hasPermission(#location, 'MANAGER') or hasRole('ROLE_ADMIN')")
-	public void addManager(User user, Location location)throws AppException;
+	public void addManager(User user, Location location, int ds)throws AppException;
 	
 	//Removes all managers and sets new manager to user
 	@PreAuthorize("hasRole('ROLE_MODERATOR')")
-	public void resetManager(User user, Location location)throws AppException;
+	public void resetManager(User user, Location location, int ds)throws AppException;
 	
 	//Removes a single manager from a location
 	@PreAuthorize("hasPermission(#user, 'WRITE') or hasRole('ROLE_MODERATOR')")
-	public void deleteManager(User user, Location location)throws AppException;
+	public void deleteManager(User user, Location location, int ds)throws AppException;
 	
 }

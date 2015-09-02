@@ -56,4 +56,34 @@ public class LocationSwitch extends ApplicationObjectSupport{
 		
 	}
 	
+	public void addManager(User user, Location location, int ds)throws AppException{
+		switch (ds){ 
+		case 1:
+			transaction.addManager1(user, location, ds, locationService);
+		case 2:
+			transaction.addManager2(user, location, ds, locationService);
+		default:
+		}
+	}
+	
+	public void resetManager(User user, Location location, int ds)throws AppException{
+		switch (ds){ 
+		case 1:
+			transaction.resetManager1(user, location, ds, locationService);
+		case 2:
+			transaction.resetManager2(user, location, ds, locationService);
+		default:
+		}
+	}
+	
+	public void deleteManager(User user, Location location, int ds)throws AppException{
+		switch (ds){ 
+		case 1:
+			transaction.deleteManager1(user, location, ds, locationService);
+		case 2:
+			transaction.deleteManager2(user, location, ds, locationService);
+		default:
+		}
+	}
+	
 }

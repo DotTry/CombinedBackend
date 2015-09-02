@@ -242,31 +242,28 @@ LocationService {
 	 * ACL related methods
 	 */
 	@Override
-	@Transactional
-	public void addManager(User user, Location location)throws AppException{
+	public void addManager(User user, Location location, int ds)throws AppException{
 		
-		aclController.createAce(location, CustomPermission.MANAGER, new PrincipalSid(user.getUsername()), 1);
-		if(aclController.hasPermission(location, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()), 1))	
-				aclController.deleteACE(location, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()), 1);
+		aclController.createAce(location, CustomPermission.MANAGER, new PrincipalSid(user.getUsername()), ds);
+		if(aclController.hasPermission(location, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()), ds))	
+				aclController.deleteACE(location, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()), ds);
 		
 	}
 	
 	@Override
-	@Transactional
-	public void resetManager(User user, Location location)throws AppException{
-		aclController.clearPermission(location, CustomPermission.MANAGER, 1);
-		aclController.createAce(location, CustomPermission.MANAGER, new PrincipalSid(user.getUsername()), 1);
-		if(aclController.hasPermission(location, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()), 1))	
-			aclController.deleteACE(location, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()), 1);
+	public void resetManager(User user, Location location, int ds)throws AppException{
+		aclController.clearPermission(location, CustomPermission.MANAGER, ds);
+		aclController.createAce(location, CustomPermission.MANAGER, new PrincipalSid(user.getUsername()), ds);
+		if(aclController.hasPermission(location, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()), ds))	
+			aclController.deleteACE(location, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()), ds);
 	
 	}
 	
 	//Removes a single manager from a location
 	@Override
-	@Transactional
-	public void deleteManager(User user, Location location)throws AppException{
-		aclController.deleteACE(location, CustomPermission.MANAGER, new PrincipalSid(user.getUsername()), 1);
-		aclController.createAce(location, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()), 1);
+	public void deleteManager(User user, Location location, int ds)throws AppException{
+		aclController.deleteACE(location, CustomPermission.MANAGER, new PrincipalSid(user.getUsername()), ds);
+		aclController.createAce(location, CustomPermission.MEMBER, new PrincipalSid(user.getUsername()), ds);
 	}
 
 }
